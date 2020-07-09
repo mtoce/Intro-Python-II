@@ -117,6 +117,9 @@ def action(user_input):
         wants_to_quit = True
     # elif user_input in help_list:
     
+    # elif
+    # elif
+    # elif
 
 if __name__ == "__main__":
     wants_to_quit = False

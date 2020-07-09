@@ -31,15 +31,18 @@ locations['narrow'].w_to = locations['foyer']
 locations['narrow'].n_to = locations['treasure']
 locations['treasure'].s_to = locations['narrow']
 
+
 def move(direction):
     '''
     Move function for the player.
     '''
-    
+
     if hasattr(player.room, direction+"_to"):
         player.room = getattr(player.room, direction+"_to")
     else:
-        print(colored("\nUnfortunately, there isn't a room there. Try another direction.", 'red'))
+        print(colored(
+            "\nUnfortunately, there isn't a room there. Try another direction.", 'red'))
+
 
 def game_help():
     print('''
@@ -56,6 +59,7 @@ def game_help():
     Quit the game: q, Q, quit, Quit, Q, exit, Exit, bye, leave
     ''')
 
+
 def action(user_input):
     '''
     Handles multiple actions the player can take, i.e. move, item pick-up, and item-drop
@@ -70,11 +74,13 @@ def action(user_input):
     # allowable quit actions by user
     exit_list = ['exit', 'Exit', 'quit', 'Quit', 'q', 'Q', 'bye', 'leave']
     # allowable item acquisition actions by user
-    item_pickup_list = ['grab', 'take', 'Grab', 'Take', 'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
+    item_pickup_list = ['grab', 'take', 'Grab', 'Take',
+                        'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
     # allowable item drop actions by user
     item_drop_list = ['drop', 'Drop', 'put', 'Put', 'throw', 'Throw']
     # allowable inventory actions by user
-    inventory_list = ['i', 'inv', 'inventory', 'I', 'Inv', 'Inventory', 'items', 'Items']
+    inventory_list = ['i', 'inv', 'inventory',
+                      'I', 'Inv', 'Inventory', 'items', 'Items']
     # allowable search actions by user
     search_list = ['search', 'Search', 'look', 'Look', 'inspect', 'Inspect']
     # allowable help actions by user
@@ -106,6 +112,7 @@ def action(user_input):
     else:
         print("\nSorry, but that is an invalid command. Type '?' or 'help' for allowable commands")
 
+
 if __name__ == "__main__":
 
     wants_to_quit = False
@@ -116,7 +123,8 @@ if __name__ == "__main__":
     # create game loop
     moves = 0
     while not wants_to_quit:
-        print("\nNumber of times player has moved: ", colored(f"{moves}", 'yellow'))
+        print("\nNumber of times player has moved: ",
+              colored(f"{moves}", 'yellow'))
         print("Current Room: ", colored(f"{player.room.name}", 'cyan'))
         print("Room Description: ", colored(f"{player.room.desc}\n", 'cyan'))
 

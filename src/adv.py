@@ -1,6 +1,6 @@
 from room import Room
 from player import Player
-# Declare all the rooms
+from termcolor import colored
 
 locations = {
     'outside':  Room("Outside Cave Entrance",
@@ -21,9 +21,7 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
-
-# Link rooms together
-
+# Room links
 locations['outside'].n_to = locations['foyer']
 locations['foyer'].s_to = locations['outside']
 locations['foyer'].n_to = locations['overlook']
@@ -33,38 +31,34 @@ locations['narrow'].w_to = locations['foyer']
 locations['narrow'].n_to = locations['treasure']
 locations['treasure'].s_to = locations['narrow']
 
-#
-# Main
-#
-
-# Make a new player object that is currently in the 'outside' room.
-
-# player = Player(input("What's your name?"), "outside", locations["outside"])
-# print(my_player)
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
 
 def move(direction):
     '''
     Move function for the player.
     '''
-    # Where is the player currently located?
-    loc = player.room
-    
-    direction = input("In which cardinal direction would you like to move?")
-    
-    if hasattr(loc, direction + "_to"):
-        loc = getattr(loc, direction + "_to")
+
+    if hasattr(player.room, direction+"_to"):
+        player.room = getattr(player.room, direction+"_to")
     else:
-        print("Unfortunately, there isn't a room there, try another direction.")
+        print(colored(
+            "\nUnfortunately, there isn't a room there. Try another direction.", 'red'))
+
+
+def game_help():
+    print('''
+    Controls:
+
+    Moving instructions:
+    Move North: n, N, north, North, Up, up
+    Move South: s, S, south, South, Down, down
+    Move East: e, E, east, East, Right, right
+    Move West: w, W, west, West, Left, left
+
+    General instructions:
+    Show this help screen: ?, help, Help
+    Quit the game: q, Q, quit, Quit, Q, exit, Exit, bye, leave
+    ''')
+
 
 def action(user_input):
     '''
@@ -79,31 +73,29 @@ def action(user_input):
 
     # allowable quit actions by user
     exit_list = ['exit', 'Exit', 'quit', 'Quit', 'q', 'Q', 'bye', 'leave']
-
     # allowable item acquisition actions by user
-    item_pickup_list = ['grab', 'take', 'Grab', 'Take', 'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
-
+    item_pickup_list = ['grab', 'take', 'Grab', 'Take',
+                        'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
     # allowable item drop actions by user
     item_drop_list = ['drop', 'Drop', 'put', 'Put', 'throw', 'Throw']
-
     # allowable inventory actions by user
-    inventory_list = ['i', 'inv', 'inventory', 'I', 'Inv', 'Inventory', 'items', 'Items']
-
+    inventory_list = ['i', 'inv', 'inventory',
+                      'I', 'Inv', 'Inventory', 'items', 'Items']
     # allowable search actions by user
     search_list = ['search', 'Search', 'look', 'Look', 'inspect', 'Inspect']
-
     # allowable help actions by user
     help_list = ['help', '?', 'Help']
 
+    # Simplify user imput
+    # splits user unput by spaces
     user_input_list = user_input.split()
-
     # if user inputs nothing, will append a space so the program doesn't break
     if not user_input_list:
         user_input_list.append('')
-
-    # Take the first action the user wants to do
+    # Take only the first word the user types as a command
     user_input = user_input_list[0]
-    print(user_input_list)
+
+    # print(user_input_list)
     if user_input in north_list:
         move('n')
     elif user_input in south_list:
@@ -115,21 +107,27 @@ def action(user_input):
     elif user_input in exit_list:
         global wants_to_quit
         wants_to_quit = True
-    # elif 
+    elif user_input in help_list:
+        game_help()
+    else:
+        print("\nSorry, but that is an invalid command. Type '?' or 'help' for allowable commands")
+
 
 if __name__ == "__main__":
+
     wants_to_quit = False
     # initialize the game (player name, starting room=outside, and room description)
     print("\n")
-    player = Player(input("What's your name?  "), "outside", locations["outside"])
+    player = Player(input("Choose a username: "), locations["outside"])
 
-    # create loop for player to move between rooms
-    for moves in range(1000):
-        print("\n")
-        print(f"Number of times player has moved: {moves} \n")
-        print(f"Player Name: {player.name}")
-        print(f"Current Room: {player.room}")
-        print(f"Room Description: {locations.get(player.room)} \n")
-        #print("\n")
-        #direction = input("In which cardinal direction would you like to move?  ")
-        action(input("What action would you like to take? "))
+    # create game loop
+    moves = 0
+    while not wants_to_quit:
+        print("\nNumber of times player has moved: ",
+              colored(f"{moves}", 'yellow'))
+        print("Current Room: ", colored(f"{player.room.name}", 'cyan'))
+        print("Room Description: ", colored(f"{player.room.desc}\n", 'cyan'))
+
+        command = input(colored("User Action: ", 'green'))
+        moves += 1
+        action(command.lower())

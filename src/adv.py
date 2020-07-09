@@ -69,30 +69,26 @@ def action(user_input):
 
     # allowable quit actions by user
     exit_list = ['exit', 'Exit', 'quit', 'Quit', 'q', 'Q', 'bye', 'leave']
-
     # allowable item acquisition actions by user
     item_pickup_list = ['grab', 'take', 'Grab', 'Take', 'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
-
     # allowable item drop actions by user
     item_drop_list = ['drop', 'Drop', 'put', 'Put', 'throw', 'Throw']
-
     # allowable inventory actions by user
     inventory_list = ['i', 'inv', 'inventory', 'I', 'Inv', 'Inventory', 'items', 'Items']
-
     # allowable search actions by user
     search_list = ['search', 'Search', 'look', 'Look', 'inspect', 'Inspect']
-
     # allowable help actions by user
     help_list = ['help', '?', 'Help']
 
+    # Simplify user imput
+    # splits user unput by spaces
     user_input_list = user_input.split()
-
     # if user inputs nothing, will append a space so the program doesn't break
     if not user_input_list:
         user_input_list.append('')
-
-    # Take the first action the user wants to do
+    # Take only the first word the user types as a command
     user_input = user_input_list[0]
+
     # print(user_input_list)
     if user_input in north_list:
         move('n')
@@ -115,7 +111,7 @@ if __name__ == "__main__":
     wants_to_quit = False
     # initialize the game (player name, starting room=outside, and room description)
     print("\n")
-    player = Player(input("What's your name?  "), locations["outside"])
+    player = Player(input("Choose a username: "), locations["outside"])
 
     # create game loop
     moves = 0

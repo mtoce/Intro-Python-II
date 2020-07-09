@@ -115,7 +115,8 @@ def action(user_input):
     elif user_input in exit_list:
         global wants_to_quit
         wants_to_quit = True
-    # elif 
+    # elif user_input in help_list:
+    
 
 if __name__ == "__main__":
     wants_to_quit = False

@@ -7,7 +7,7 @@ class Player:
     def __init__(self, name, room):
         self.name = name
         self.room = room
-        #self.player_items = player_items
+        self.items = []
 
-    def __str__(self):
-        return f"Hello {self.name}, you are in the {self.room}"
+    # def __str__(self):
+    #     return f"Hello {self.name}, you are in the {self.room}"

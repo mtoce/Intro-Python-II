@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 from termcolor import colored
 
 locations = {
@@ -31,7 +32,10 @@ locations['narrow'].w_to = locations['foyer']
 locations['narrow'].n_to = locations['treasure']
 locations['treasure'].s_to = locations['narrow']
 
-
+# Add items to rooms
+locations['treasure'].items.append(Item('goblet', 'A shiny cup that can be used to hold your liquor'))
+locations['outside'].items.append(Item('tulip', 'A beautiful periwinkle-colored flower'))
+locations['outside'].items.append(Item('rose', 'A beautiful flower that women adore'))
 def move(direction):
     '''
     Move function for the player.
@@ -59,6 +63,58 @@ def game_help():
     Quit the game: q, Q, quit, Quit, Q, exit, Exit, bye, leave
     ''')
 
+def item_transfer(item, grabbing):
+    '''
+    Item pickup/drop function
+    '''
+    item = item.lower()
+    # if grabbing the item (grabbing is a boolean variable: same as (if grabbing == True)
+    if grabbing:
+        # if item name is found in the room
+        if item in [c.name for c in player.room.items]:
+            # use this dual syntax since we need to use c in player.room.items.pop(c)
+            for c, item_object in enumerate(player.room.items):
+                if item_object.name == item:
+                    player.items.append(player.room.items.pop(c))
+                    print("You grabbed the ", item)
+        # if item name isn't in room
+        else:
+            print("Seems as though that item isn't here...")
+    # if dropping an item
+    else:
+        # checks that the item is in the players current "inventory"
+        if item in [c.name for c in player.items]:
+            # iterate thru player's item list and get item pbject via index
+            # use this dual syntax since we need to use c in player.items.pop(c)
+            for c, item_object in enumerate(player.items):
+                if item_object.name == item:
+                    player.room.items.append(player.items.pop(c))
+                    print("You dropped the ", item)
+        else:
+            print("You aren't carrying that item with you!")
+
+def search_room():
+    '''
+    Searches the player's current room for items
+    '''
+    print("Current items inside this room: ", colored([f"{item.name}: {item.desc}" for item in player.room.items], 'magenta'))
+
+
+def inspect():
+    '''
+    Inspects the items in a players inventory
+    '''
+
+def inventory():
+    '''
+    Current inventory list for the player
+    '''
+    if len(player.items) >= 1:
+        print("Your current inventory: ")
+        for item in player.items:
+            print(item.name, "\n")
+    else:
+        print("You currently aren't holding any items! Try using command ", colored('grab + item name', 'magenta'))
 
 def action(user_input):
     '''
@@ -73,6 +129,8 @@ def action(user_input):
 
     # allowable quit actions by user
     exit_list = ['exit', 'Exit', 'quit', 'Quit', 'q', 'Q', 'bye', 'leave']
+    # allowable search actions by user
+    search_list = ['search', 'Search', 'look', 'Look', 'find', 'Find']
     # allowable item acquisition actions by user
     item_pickup_list = ['grab', 'take', 'Grab', 'Take',
                         'get', 'Get', 'yoink', 'Yoink', 'gather', 'Gather']
@@ -109,6 +167,21 @@ def action(user_input):
         wants_to_quit = True
     elif user_input in help_list:
         game_help()
+    elif user_input in search_list:
+        search_room()
+    elif user_input in item_pickup_list:
+        # check to see that the item is specified
+        if len(user_input_list) > 1:
+            item_transfer(user_input_list[1], grabbing=True)
+        else:
+            print("You can't decide what to grab")
+    elif user_input in item_drop_list:
+        if len(user_input_list) > 1:
+            item_transfer(user_input_list[1], grabbing=False)
+        else:
+            print("You go to drop something, but decided it looked pretty cool and kept it instead.")
+    elif user_input in inventory_list:
+        inventory()
     else:
         print("\nSorry, but that is an invalid command. Type '?' or 'help' for allowable commands")
 
@@ -127,7 +200,8 @@ if __name__ == "__main__":
               colored(f"{moves}", 'yellow'))
         print("Current Room: ", colored(f"{player.room.name}", 'cyan'))
         print("Room Description: ", colored(f"{player.room.desc}\n", 'cyan'))
+        print("Player Inventory: ", colored([f"{item.name}: {item.desc}" for item in player.items if len(player.items) >= 1], 'magenta'))
 
         command = input(colored("User Action: ", 'green'))
-        moves += 1
         action(command.lower())
+        moves += 1
